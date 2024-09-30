@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LFM.WorkStream.Application"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LFM.WorkStream.Repository", "LFM.WorkStream.Repository\LFM.WorkStream.Repository.csproj", "{14977BCC-3ABC-477D-9853-EB2C4B01B39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LFM.WorkStream.Api", "LFM.WorkStream.Api\LFM.WorkStream.Api.csproj", "{F57CB6B6-15A0-4259-9551-D48B1F8115A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LFM.WorkStream.Api", "LFM.WorkStream.Api\LFM.WorkStream.Api.csproj", "{31ABAFE8-6D58-4AD9-ADA0-781D913D171B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +26,9 @@ Global
 		{14977BCC-3ABC-477D-9853-EB2C4B01B39B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14977BCC-3ABC-477D-9853-EB2C4B01B39B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14977BCC-3ABC-477D-9853-EB2C4B01B39B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F57CB6B6-15A0-4259-9551-D48B1F8115A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F57CB6B6-15A0-4259-9551-D48B1F8115A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F57CB6B6-15A0-4259-9551-D48B1F8115A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F57CB6B6-15A0-4259-9551-D48B1F8115A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31ABAFE8-6D58-4AD9-ADA0-781D913D171B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31ABAFE8-6D58-4AD9-ADA0-781D913D171B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31ABAFE8-6D58-4AD9-ADA0-781D913D171B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31ABAFE8-6D58-4AD9-ADA0-781D913D171B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
