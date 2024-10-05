@@ -22,6 +22,38 @@ namespace LFM.WorkStream.Repository.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("LFM.WorkStream.Core.Models.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2024, 10, 4, 17, 14, 8, 25, DateTimeKind.Unspecified).AddTicks(7030), new TimeSpan(0, 1, 0, 0, 0)));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("WorkStreamId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Projects");
+                });
+
             modelBuilder.Entity("LFM.WorkStream.Core.Models.WorkStream", b =>
                 {
                     b.Property<Guid>("Id")
@@ -31,7 +63,7 @@ namespace LFM.WorkStream.Repository.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2024, 9, 29, 20, 13, 59, 20, DateTimeKind.Unspecified).AddTicks(7150), new TimeSpan(0, 2, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2024, 10, 4, 17, 14, 8, 25, DateTimeKind.Unspecified).AddTicks(6450), new TimeSpan(0, 1, 0, 0, 0)));
 
                     b.Property<string>("Description")
                         .HasColumnType("text");

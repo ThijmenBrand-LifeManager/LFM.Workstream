@@ -3,13 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LFM.WorkStream.Core.Models;
 
-[Table("WorkStreams")]
-public class WorkStream
+public class Project
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
-    public required string Name { get; set; }
+    public string? WorkStreamId { get; set; }
+    public string Name { get; set; }
     public string? Description { get; set; }
+    public DateTimeOffset? StartDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
     public DateTimeOffset CreatedAt { get; }
 }

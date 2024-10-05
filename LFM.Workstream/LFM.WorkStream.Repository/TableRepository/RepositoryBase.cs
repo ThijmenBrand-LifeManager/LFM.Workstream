@@ -14,7 +14,7 @@ public class RepositoryBase
 }
 
 public abstract class RepositoryBase<TModel>(DatabaseContext context) : RepositoryBase(context)
-    where TModel : BaseModel
+    where TModel : class
 {
     public async Task<TModel> CreateAsync(TModel obj, CancellationToken cancellationToken = default)
     {

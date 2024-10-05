@@ -1,9 +1,11 @@
 using FluentValidation;
+using LFM.Authorization.AspNetCore;
 using LFM.WorkStream.Api.Endpoints.Dto;
 using LFM.WorkStream.Api.Validators;
 using LFM.WorkStream.Application.Commands;
 using LFM.WorkStream.Application.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LFM.WorkStream.Api.Endpoints;
@@ -27,7 +29,8 @@ public class WorkStreamController(ISender sender, WorkStreamValidator validator)
         return result == null ? Results.NotFound() : Results.Ok(result);
     }
 
-    [HttpGet(Name = "ListWorkStreams")]
+    [HttpGet("list", Name = "ListWorkStreams")]
+    [LfmAuthorize]
     public async Task<IResult> ListWorkStreams()
     {
         var result = await sender.Send(new ListWorkStreamsQuery());
@@ -40,7 +43,14 @@ public class WorkStreamController(ISender sender, WorkStreamValidator validator)
         var result = await sender.Send(new UpdateWorkStreamCommand(id, request.Name, request.Description));
         return Results.Ok(result);
     }
-    
+
+    [HttpGet("{id}/projects", Name = "ListWorkStreamProjects")]
+    public async Task<IResult> ListWorkStreamProjects(string id)
+    {
+        var result = await sender.Send(new ListWorkStreamProjectsQuery(id));
+        return Results.Ok(result);
+    }
+
     private void ValidateDto(WorkStreamDto dto)
     {
         var result = validator.Validate(dto);

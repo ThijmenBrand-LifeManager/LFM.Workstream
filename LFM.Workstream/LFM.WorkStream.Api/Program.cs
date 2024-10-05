@@ -1,4 +1,6 @@
 using FluentValidation;
+using LFM.Authorization.AspNetCore;
+using LFM.WorkStream.Api.Extensions;
 using LFM.WorkStream.Application;
 using LFM.WorkStream.Repository;
 using Serilog;
@@ -10,7 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+var enableSwagger = builder.Configuration.GetValue<bool>("OpenApi:ShowDocument");
+if (enableSwagger)
+{
+    builder.Services.AddSwagger();
+}
+
+builder.Services.AddLfmAuthorization(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -27,14 +38,15 @@ builder.Host.UseSerilog();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (enableSwagger)
 {
-    app.UseSwagger();
+    app.UseSwagger().UseAuthentication();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

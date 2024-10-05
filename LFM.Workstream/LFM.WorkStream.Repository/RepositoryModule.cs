@@ -1,5 +1,5 @@
 using LFM.WorkStream.Repository.Interfaces;
-using LFM.WorkStream.Repository.TableRepository.WorkStreamRepository;
+using LFM.WorkStream.Repository.TableRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +14,7 @@ public static class RepositoryModule
             options.UseNpgsql(configuration.GetSection("Postgres").GetValue<string>("ConnectionString")));
 
         services.AddTransient<IWorkStreamRepository, WorkStreamRepository>();
+        services.AddTransient<IProjectRepository, ProjectRepository>();
         
         return services;
     }
