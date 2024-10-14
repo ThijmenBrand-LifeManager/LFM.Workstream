@@ -25,4 +25,4 @@ jobs:
         displayName: "Login to ACR"
         inputs:
           command: login
-          containerRegistry: $(acrServiceConnection)
+          containerRegistry: $(LifeManager - non-prod - container registry)
