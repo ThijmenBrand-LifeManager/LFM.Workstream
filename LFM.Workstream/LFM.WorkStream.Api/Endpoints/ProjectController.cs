@@ -1,3 +1,4 @@
+using LFM.Authorization.AspNetCore;
 using LFM.WorkStream.Api.Endpoints.Dto;
 using LFM.WorkStream.Application.Commands;
 using LFM.WorkStream.Application.Queries;
@@ -10,7 +11,8 @@ namespace LFM.WorkStream.Api.Endpoints;
 [Route("[controller]")]
 public class ProjectController(ISender sender) : ControllerBase
 {
-    [HttpGet("{id}", Name = "GetProject")]
+    [HttpGet("workstream/{workstreamId}", Name = "GetProject")]
+    [LfmAuthorize]
     public async Task<IResult> GetProject(string id)
     {
         var result = await sender.Send(new GetProjectQuery(id));

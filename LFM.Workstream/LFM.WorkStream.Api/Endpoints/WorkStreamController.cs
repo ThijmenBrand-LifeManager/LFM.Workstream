@@ -1,5 +1,6 @@
 using FluentValidation;
 using LFM.Authorization.AspNetCore;
+using LFM.Authorization.AspNetCore.Services;
 using LFM.WorkStream.Api.Endpoints.Dto;
 using LFM.WorkStream.Api.Validators;
 using LFM.WorkStream.Application.Commands;
@@ -15,6 +16,7 @@ namespace LFM.WorkStream.Api.Endpoints;
 public class WorkStreamController(ISender sender, WorkStreamValidator validator) : ControllerBase
 {
     [HttpPost(Name = "CreateWorkStream")]
+    [LfmAuthorize]
     public async Task<IResult> CreateWorkStream(WorkStreamDto request)
     {
         ValidateDto(request);
@@ -22,10 +24,11 @@ public class WorkStreamController(ISender sender, WorkStreamValidator validator)
         return Results.Ok(result);
     }
 
-    [HttpGet("{id}", Name = "GetWorkStream")]
-    public async Task<IResult> GetWorkStream(string id)
+    [HttpGet("{workstreamId}", Name = "GetWorkStream")]
+    [LfmAuthorize]
+    public async Task<IResult> GetWorkStream(string workstreamId)
     {
-        var result = await sender.Send(new GetWorkStreamQuery(id));
+        var result = await sender.Send(new GetWorkStreamQuery(workstreamId));
         return result == null ? Results.NotFound() : Results.Ok(result);
     }
 
@@ -37,14 +40,16 @@ public class WorkStreamController(ISender sender, WorkStreamValidator validator)
         return Results.Ok(result);
     }
 
-    [HttpPut("{id}", Name = "UpdateWorkStream")]
-    public async Task<IResult> UpdateWorkStream(string id, WorkStreamDto request)
+    [HttpPut("{workstreamId}", Name = "UpdateWorkStream")]
+    [LfmAuthorize]
+    public async Task<IResult> UpdateWorkStream(string workstreamId, WorkStreamDto request)
     {
-        var result = await sender.Send(new UpdateWorkStreamCommand(id, request.Name, request.Description));
+        var result = await sender.Send(new UpdateWorkStreamCommand(workstreamId, request.Name, request.Description));
         return Results.Ok(result);
     }
 
     [HttpGet("{id}/projects", Name = "ListWorkStreamProjects")]
+    [LfmAuthorize]
     public async Task<IResult> ListWorkStreamProjects(string id)
     {
         var result = await sender.Send(new ListWorkStreamProjectsQuery(id));
@@ -58,6 +63,5 @@ public class WorkStreamController(ISender sender, WorkStreamValidator validator)
         {   
             throw new ValidationException(result.Errors);
         }
-        
     }
 }

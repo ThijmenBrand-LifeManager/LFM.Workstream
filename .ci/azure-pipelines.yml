@@ -1,0 +1,12 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - release
+
+stages:
+  - stage: Build
+    displayName: Build
+    jobs:
+      - template: build.yml
