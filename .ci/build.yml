@@ -1,3 +1,7 @@
+parameters:
+  - name: applicationName
+    type: string
+
 jobs:
   - job: Build
     displayName: "Build the project"
@@ -15,15 +19,26 @@ jobs:
       : isMain: false
         buildConfiguration: "Release"
         packageVersion: $(Build.BuildNumber).0-preview
-      serviceConnection: "LifeManager - non-prod - container registry"
+      ACR_NAME: lifemanager.azurecr.io
+      ACR_SERVICE_PRINCIPAL_ID: <your-managed-identity-principal-id>
 
     steps:
       - bash: |
           echo 'Build configuration: ${{ variables.buildConfiguration }}'
           echo 'Package version: ${{ variables.packageVersion }}'
 
-      - task: Docker@2
-        displayName: "Login to ACR"
+      - task: DockerInstaller@0
         inputs:
-          command: login
-          containerRegistry: ${{ variables.serviceConnection }}
+          dockerVersion: "17.09.0-ce"
+
+      - task: Docker@2
+        inputs:
+          containerRegistry: "LifeManager - non-prod - container registry"
+          command: "login"
+
+      - task: Docker@2
+        inputs:
+          containerRegistry: "LifeManager - non-prod - container registry"
+          repository: "lfm-workstream"
+          command: "buildAndPush"
+          Dockerfile: "**/Dockerfile"
