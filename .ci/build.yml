@@ -1,3 +1,11 @@
+parameters:
+  - name: Dockerfile
+    displayName: Dockerfile path
+    type: string
+  - name: DockerImageName
+    displayName: Docker image name
+    type: string
+
 jobs:
   - job: Build
     displayName: "Build the project"
@@ -15,6 +23,7 @@ jobs:
       : isMain: false
         buildConfiguration: "Release"
         packageVersion: $(Build.BuildNumber).0-preview
+      serviceConnection: "LifeManager - non-prod - container registry"
 
     steps:
       - bash: |
@@ -25,4 +34,4 @@ jobs:
         displayName: "Login to ACR"
         inputs:
           command: login
-          containerRegistry: LifeManager - non-prod - container registry
+          containerRegistry: ${{ variables.serviceConnection }}
