@@ -8,7 +8,5 @@ trigger:
 stages:
   - stage: Build
     displayName: Build
-    variables:
-      - group: LFM - Deployment
     jobs:
       - template: build.yml

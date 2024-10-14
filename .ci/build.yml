@@ -1,11 +1,3 @@
-parameters:
-  - name: Dockerfile
-    displayName: Dockerfile path
-    type: string
-  - name: DockerImageName
-    displayName: Docker image name
-    type: string
-
 jobs:
   - job: Build
     displayName: "Build the project"
