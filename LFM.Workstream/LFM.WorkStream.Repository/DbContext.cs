@@ -1,3 +1,4 @@
+using LFM.WorkStream.Core.Enums;
 using LFM.WorkStream.Core.Models;
 using Microsoft.EntityFrameworkCore;
 

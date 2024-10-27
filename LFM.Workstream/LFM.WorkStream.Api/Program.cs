@@ -1,7 +1,11 @@
 using FluentValidation;
 using LFM.Authorization.AspNetCore;
+using LFM.Authorization.AspNetCore.Models;
+using LFM.WorkStream.Api.Authorization;
 using LFM.WorkStream.Api.Extensions;
 using LFM.WorkStream.Application;
+using LFM.WorkStream.Core;
+using LFM.WorkStream.Core.Messages;
 using LFM.WorkStream.Repository;
 using Serilog;
 using Serilog.Formatting.Compact;
@@ -19,7 +23,28 @@ if (enableSwagger)
     builder.Services.AddSwagger();
 }
 
-builder.Services.AddLfmAuthorization(builder.Configuration);
+const string CorsDevelopmentPolicy = "local_development";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CorsDevelopmentPolicy, policy =>
+    {
+        policy.WithOrigins("*")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddLfmAuthorization(builder.Configuration).InsertPermissionsOnRole(x =>
+{
+    x.Role = DefaultRoles.ProjectAdmin;
+    x.Permissions =
+    [
+        new PermissionDto { Name = Permissions.WorkstreamConfigurer, Category = "Workstream" },
+        new PermissionDto { Name = Permissions.WorkstreamReader, Category = "Workstream" }
+    ];
+});
+
+builder.Services.AddMessageBus(builder.Configuration, enableQueueListener: false);
 
 builder.Services.AddHttpContextAccessor();
 
@@ -30,6 +55,7 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Services.AddRepositoryModule(builder.Configuration);
 builder.Services.AddApplicationModule(builder.Configuration);
+builder.Services.AddCoreModule(builder.Configuration);
 
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -48,7 +74,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(CorsDevelopmentPolicy);
+
 
 app.MapControllers();
-
 app.Run();

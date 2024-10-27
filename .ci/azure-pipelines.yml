@@ -10,5 +10,6 @@ stages:
     displayName: Build
     jobs:
       - template: build.yml
-        parameters:
-          applicationName: "LifeManager"
+
+  - stage: Deploy_docker
+  
