@@ -68,6 +68,8 @@ if (enableSwagger)
 {
     app.UseSwagger().UseAuthentication();
     app.UseSwaggerUI();
+    
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
