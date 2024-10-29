@@ -20,7 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 var enableSwagger = builder.Configuration.GetValue<bool>("OpenApi:ShowDocument");
 if (enableSwagger)
 {
-    builder.Services.AddSwagger();
+    builder.Services.AddSwagger(builder.Configuration);
 }
 
 const string CorsDevelopmentPolicy = "local_development";

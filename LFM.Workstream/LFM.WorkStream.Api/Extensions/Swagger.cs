@@ -4,7 +4,7 @@ namespace LFM.WorkStream.Api.Extensions;
 
 public static class Swagger
 {
-    public static void AddSwagger(this IServiceCollection service)
+    public static void AddSwagger(this IServiceCollection service, IConfiguration configuration)
     {
         service.AddSwaggerGen(options =>
         {
@@ -32,6 +32,12 @@ public static class Swagger
                     },
                     []
                 }
+            });
+            
+            var openApiUrl = configuration.GetValue<string>("OpenApi:Url");
+            options.AddServer(new OpenApiServer
+            {
+                Url = openApiUrl
             });
         });
     }
