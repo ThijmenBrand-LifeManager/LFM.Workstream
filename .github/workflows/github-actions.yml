@@ -1,18 +1,10 @@
-name: Build and deploy LFM.Workstream
+name: Build and deploy LFM.Authorization
 
 on:
   workflow_dispatch:
     inputs:
-      publish-package:
-        description: "Publish package"
-        default: false
-        type: boolean
-      release:
-        description: "Release app"
-        default: false
-        type: boolean
-      test-application:
-        description: "Test application"
+      release-dev:
+        description: "Release app to D"
         default: false
         type: boolean
   pull_request:
@@ -23,38 +15,18 @@ on:
     branches:
       - develop
       - release
+  release:
+    types: [published]
 
 jobs:
-  test:
-    if: inputs.test-application == true || (github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'release'))
-    name: Build and test application
-    uses: ThijmenBrand-LifeManager/LFM.Pipelines/.github/workflows/build-and-test.yml@main
+  main:
+    name: A test
+    uses: ThijmenBrand-LifeManager/LFM.Pipelines/.github/workflows/main.yml@main
     with:
-      dotnet-version: 8.0.x
+      project-path: LFM.Workstream
       solution-file: LFM.Workstream/LFM.Workstream.sln
-      build-configuration: Release
-      app-name: Workstream
-    secrets: inherit
-
-  automatic-deploy:
-    needs: [test]
-    if: inputs.release == false && github.event_name == 'push'
-    name: Automatic deploy to Env
-    uses: ThijmenBrand-LifeManager/LFM.Pipelines/.github/workflows/build-docker-image.yml@main
-    with:
-      environment: develop
-      project-path: LFM.Workstream
       dockerfile-path: |-
         api.Dockerfile
-    secrets: inherit
-
-  manual-deploy:
-    if: inputs.release == true
-    name: Manual deploy to env
-    uses: ThijmenBrand-LifeManager/LFM.Pipelines/.github/workflows/build-docker-image.yml@main
-    with:
-      environment: develop
-      project-path: LFM.Workstream
-      dockerfile-path: |-
-        api.Dockerfile
+      force-release-dev: ${{ inputs.release-dev || false }}
+      app-name: LFM.Workstream
     secrets: inherit
