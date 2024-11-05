@@ -11,6 +11,10 @@ on:
         description: "Release app"
         default: false
         type: boolean
+      test-application:
+        description: "Test application"
+        default: false
+        type: boolean
   pull_request:
     branches:
       - develop
@@ -22,7 +26,7 @@ on:
 
 jobs:
   test:
-    if: github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'release')
+    if: inputs.test-application == true || (github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'release'))
     name: Build and test application
     uses: ThijmenBrand-LifeManager/LFM.Pipelines/.github/workflows/build-and-test.yml@main
     with:
