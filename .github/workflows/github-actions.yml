@@ -31,7 +31,7 @@ jobs:
     uses: ThijmenBrand-LifeManager/LFM.Pipelines/.github/workflows/build-and-test.yml@main
     with:
       dotnet-version: 8.0.x
-      solution-file: LFM.Wotkstream/LFM.Wotkstream.sln
+      solution-file: LFM.Workstream/LFM.Workstream.sln
       build-configuration: Release
       app-name: Workstream
     secrets: inherit
