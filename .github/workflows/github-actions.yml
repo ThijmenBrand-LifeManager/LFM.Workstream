@@ -29,6 +29,7 @@ jobs:
       dotnet-version: 8.0.x
       solution-file: LFM.Wotkstream/LFM.Wotkstream.sln
       build-configuration: Release
+      app-name: Workstream
     secrets: inherit
 
   automatic-deploy:
