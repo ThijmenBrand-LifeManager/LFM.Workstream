@@ -1,11 +1,10 @@
 using System.Reflection;
 using Azure.Core;
-using Azure.Identity;
 using LFM.Authorization.Core.Messages;
+using LFM.Azure.Common.Helpers;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using DefaultAzureCredential = Azure.Identity.DefaultAzureCredential;
 
 namespace LFM.WorkStream.Core.Messages;
 
@@ -23,12 +22,21 @@ public static class MassTransitExtension
 
             x.UsingAzureServiceBus((context, cfg) =>
             {
-                var host = configuration["ServiceBus:Host"] ??
-                           throw new NullReferenceException("ServiceBus:Host is not defined");
-                cfg.Host(new Uri(host), h =>
+                if (EnvironmentHelper.IsDevelopmentEnvironment())
                 {
-                    h.TokenCredential = tokencredential;
-                });
+                    var host = configuration["ServiceBus:Host"] ??
+                               throw new NullReferenceException("ServiceBus:Host is not defined");
+                    cfg.Host(new Uri(host), h =>
+                    {
+                        h.TokenCredential = tokencredential;
+                    });
+                }
+                else
+                {
+                    var connectionString = configuration["ServiceBus:ConnectionString"] ??
+                                           throw new NullReferenceException("ServiceBus:ConnectionString is not defined");
+                    cfg.Host(connectionString);
+                }
 
                 cfg.UseSendFilter(typeof(SendWorkstreamIdFilter<>), context);
 
