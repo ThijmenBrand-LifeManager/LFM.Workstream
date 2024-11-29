@@ -1,35 +1,46 @@
 using System.Reflection;
+using Azure.Identity;
 using LFM.Authorization.Core.Messages;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DefaultAzureCredential = Azure.Identity.DefaultAzureCredential;
 
 namespace LFM.WorkStream.Core.Messages;
 
 public static class MassTransitExtension
 {
-    public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration, bool enableQueueListener)
+    public static IServiceCollection RegisterMasstransit(this IServiceCollection services, IConfiguration configuration, bool enableQueueListener)
     {
         services.AddMassTransit(x =>
         {
             var entryAssembly = Assembly.GetEntryAssembly();
             x.AddConsumers(entryAssembly);
 
-            x.UsingRabbitMq((context, cfg) =>
+            x.UsingAzureServiceBus((context, cfg) =>
             {
-                var host = configuration["RabbitMq:Host"] ??
-                           throw new NullReferenceException("RabbitMq:Host is not defined");
+                var host = configuration["ServiceBus:Host"] ??
+                           throw new NullReferenceException("ServiceBus:Host is not defined");
+                var clientId = configuration["Identity:ClientId"] ??
+                               throw new NullReferenceException("Identity:ClientId is not defined");
 
-                cfg.Host(host, x => {});
+                cfg.Host(new Uri(host), h =>
+                {
+                    h.TokenCredential = new DefaultAzureCredential(
+                        new DefaultAzureCredentialOptions
+                    {
+                        ManagedIdentityClientId = clientId
+                    });
+                });
 
                 cfg.UseSendFilter(typeof(SendWorkstreamIdFilter<>), context);
 
                 if (enableQueueListener)
                 {
-                    var queueName = configuration["RabbitMq:QueueName"] ??
-                                    throw new NullReferenceException("RabbitMq:QueueName is not defined");
+                    var workstreamQueue = configuration["ServiceBus:WorkstreamQueueName"] ??
+                                          throw new NullReferenceException("ServiceBus:WorkstreamQueueName is not defined");
 
-                    cfg.ReceiveEndpoint(queueName, e =>
+                    cfg.ReceiveEndpoint(workstreamQueue, e =>
                     {
                         e.ConfigureConsumers(context);
                     });

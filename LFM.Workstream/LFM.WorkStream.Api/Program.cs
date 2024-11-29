@@ -44,7 +44,7 @@ builder.Services.AddLfmAuthorization(builder.Configuration).InsertPermissionsOnR
     ];
 });
 
-builder.Services.AddMessageBus(builder.Configuration, enableQueueListener: false);
+builder.Services.RegisterMasstransit(builder.Configuration, enableQueueListener: false);
 
 builder.Services.AddHttpContextAccessor();
 

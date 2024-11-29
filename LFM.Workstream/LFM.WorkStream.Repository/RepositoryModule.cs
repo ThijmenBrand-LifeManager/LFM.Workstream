@@ -3,6 +3,7 @@ using LFM.WorkStream.Repository.TableRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 
 namespace LFM.WorkStream.Repository;
 
@@ -10,12 +11,28 @@ public static class RepositoryModule
 {
     public static IServiceCollection AddRepositoryModule(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<DatabaseContext>(options =>
-            options.UseNpgsql(configuration.GetSection("Postgres").GetValue<string>("ConnectionString")));
+        RegisterDatabaseContext(services, configuration);
 
         services.AddTransient<IWorkStreamRepository, WorkStreamRepository>();
         services.AddTransient<IProjectRepository, ProjectRepository>();
         
         return services;
+    }
+    
+    private static void RegisterDatabaseContext(IServiceCollection services, IConfiguration configuration)
+    {
+        var databaseConfiguration = configuration.GetSection("Database");
+        var connectionString = new NpgsqlConnectionStringBuilder
+        {
+            Host = databaseConfiguration.GetValue<string>("Host"),
+            Port = databaseConfiguration.GetValue<int>("Port"),
+            Database = databaseConfiguration.GetValue<string>("Database"),
+            Username = databaseConfiguration.GetValue<string>("Username"),
+            SslMode = SslMode.Require,
+            Password = configuration.GetSection("Database").GetValue<string>("Password")
+        }.ToString();
+        
+        services.AddDbContext<DatabaseContext>(options =>
+            options.UseNpgsql(connectionString));
     }
 }

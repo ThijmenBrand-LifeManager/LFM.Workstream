@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace LFM.WorkStream.Core.Messages;
 
-public class MessagePublisher(IBus bus, IOptions<RabbitmqOptions> options) : IMessagePublisher
+public class MessagePublisher(IBus bus, IOptions<ServiceBusOptions> options) : IMessagePublisher
 {
     public async void SendToQueue(object command, CancellationToken cancellationToken = default)
     {

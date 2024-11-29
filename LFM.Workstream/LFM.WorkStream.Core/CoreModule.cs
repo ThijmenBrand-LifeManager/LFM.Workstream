@@ -13,10 +13,10 @@ public static class CoreModule
         services.AddSingleton<IMessagePublisher, MessagePublisher>();
         services.AddSingleton<IUserHelper, UserHelper>();
         
-        services.AddOptions<RabbitmqOptions>().Configure(x =>
+        services.AddOptions<ServiceBusOptions>().Configure(x =>
         {
-            x.WorkStreamQueue = configuration["RabbitMq:QueueName"] ??
-                                throw new NullReferenceException("RabbitMq:QueueName is not defined");
+            x.WorkStreamQueue = configuration["ServiceBus:QueueName"] ??
+                                throw new NullReferenceException("ServiceBus:QueueName is not defined");
         });
         
         return services;

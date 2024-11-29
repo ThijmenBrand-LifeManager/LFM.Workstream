@@ -1,6 +1,6 @@
 namespace LFM.WorkStream.Core.Messages;
 
-public class RabbitmqOptions
+public class ServiceBusOptions
 {
     public string WorkStreamQueue { get; set; }
 }
