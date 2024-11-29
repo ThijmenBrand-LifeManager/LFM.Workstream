@@ -1,6 +1,8 @@
+using Azure.Core;
 using FluentValidation;
 using LFM.Authorization.AspNetCore;
 using LFM.Authorization.AspNetCore.Models;
+using LFM.Azure.Common.Authentication;
 using LFM.WorkStream.Api.Authorization;
 using LFM.WorkStream.Api.Extensions;
 using LFM.WorkStream.Application;
@@ -11,6 +13,9 @@ using Serilog;
 using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
+var userManagedIdentityClientId = Environment.GetEnvironmentVariable("Identity__ClientId");
+var tokenCredential = AzureCredentialFactory.GetCredential(userManagedIdentityClientId);
+builder.Services.AddSingleton<TokenCredential>(tokenCredential);
 
 // Add services to the container.
 

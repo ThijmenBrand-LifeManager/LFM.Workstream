@@ -1,4 +1,5 @@
 using System.Reflection;
+using Azure.Core;
 using Azure.Identity;
 using LFM.Authorization.Core.Messages;
 using MassTransit;
@@ -12,6 +13,9 @@ public static class MassTransitExtension
 {
     public static IServiceCollection RegisterMasstransit(this IServiceCollection services, IConfiguration configuration, bool enableQueueListener)
     {
+        var sp = services.BuildServiceProvider();
+        var tokencredential = sp.GetService<TokenCredential>();
+        
         services.AddMassTransit(x =>
         {
             var entryAssembly = Assembly.GetEntryAssembly();
@@ -21,16 +25,9 @@ public static class MassTransitExtension
             {
                 var host = configuration["ServiceBus:Host"] ??
                            throw new NullReferenceException("ServiceBus:Host is not defined");
-                var clientId = configuration["Identity:ClientId"] ??
-                               throw new NullReferenceException("Identity:ClientId is not defined");
-
                 cfg.Host(new Uri(host), h =>
                 {
-                    h.TokenCredential = new DefaultAzureCredential(
-                        new DefaultAzureCredentialOptions
-                    {
-                        ManagedIdentityClientId = clientId
-                    });
+                    h.TokenCredential = tokencredential;
                 });
 
                 cfg.UseSendFilter(typeof(SendWorkstreamIdFilter<>), context);
