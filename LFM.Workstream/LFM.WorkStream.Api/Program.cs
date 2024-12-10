@@ -17,8 +17,6 @@ var userManagedIdentityClientId = Environment.GetEnvironmentVariable("Identity__
 var tokenCredential = AzureCredentialFactory.GetCredential(userManagedIdentityClientId);
 builder.Services.AddSingleton<TokenCredential>(tokenCredential);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 

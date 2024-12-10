@@ -22,21 +22,9 @@ public static class MassTransitExtension
 
             x.UsingAzureServiceBus((context, cfg) =>
             {
-                if (EnvironmentHelper.IsDevelopmentEnvironment())
-                {
-                    var host = configuration["ServiceBus:Host"] ??
-                               throw new NullReferenceException("ServiceBus:Host is not defined");
-                    cfg.Host(new Uri(host), h =>
-                    {
-                        h.TokenCredential = tokencredential;
-                    });
-                }
-                else
-                {
                     var connectionString = configuration["ServiceBus:ConnectionString"] ??
                                            throw new NullReferenceException("ServiceBus:ConnectionString is not defined");
                     cfg.Host(connectionString);
-                }
 
                 cfg.UseSendFilter(typeof(SendWorkstreamIdFilter<>), context);
 
