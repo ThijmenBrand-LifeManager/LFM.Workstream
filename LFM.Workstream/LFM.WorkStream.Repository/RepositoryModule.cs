@@ -22,13 +22,14 @@ public static class RepositoryModule
     private static void RegisterDatabaseContext(IServiceCollection services, IConfiguration configuration)
     {
         var databaseConfiguration = configuration.GetSection("Database");
+        var sslmode = configuration.GetValue<string>("Environment") == "Production" ? SslMode.Require : SslMode.Prefer;
         var connectionString = new NpgsqlConnectionStringBuilder
         {
             Host = databaseConfiguration.GetValue<string>("Host"),
             Port = databaseConfiguration.GetValue<int>("Port"),
             Database = databaseConfiguration.GetValue<string>("Database"),
             Username = databaseConfiguration.GetValue<string>("Username"),
-            SslMode = SslMode.Require,
+            SslMode = sslmode,
             Password = configuration.GetSection("Database").GetValue<string>("Password")
         }.ToString();
         

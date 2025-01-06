@@ -2,6 +2,7 @@ using Azure.Core;
 using FluentValidation;
 using LFM.Authorization.AspNetCore;
 using LFM.Authorization.AspNetCore.Models;
+using LFM.Authorization.Core.Extensions;
 using LFM.Azure.Common.Authentication;
 using LFM.WorkStream.Api.Authorization;
 using LFM.WorkStream.Api.Extensions;
@@ -19,6 +20,9 @@ builder.Services.AddSingleton<TokenCredential>(tokenCredential);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.RegisterOpenTelementry(builder.Configuration, builder.Environment.ApplicationName);
+builder.Services.RegisterSerilog(builder.Configuration, builder.Environment.ApplicationName);
 
 var enableSwagger = builder.Configuration.GetValue<bool>("OpenApi:ShowDocument");
 if (enableSwagger)
@@ -51,18 +55,11 @@ builder.Services.RegisterMasstransit(builder.Configuration, enableQueueListener:
 
 builder.Services.AddHttpContextAccessor();
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .WriteTo.Console(new RenderedCompactJsonFormatter())
-    .CreateLogger();
-
 builder.Services.AddRepositoryModule(builder.Configuration);
 builder.Services.AddApplicationModule(builder.Configuration);
 builder.Services.AddCoreModule(builder.Configuration);
 
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -83,4 +80,5 @@ app.UseCors(CorsDevelopmentPolicy);
 
 
 app.MapControllers();
+app.MapPrometheusScrapingEndpoint();
 app.Run();
